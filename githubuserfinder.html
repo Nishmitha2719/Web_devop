@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub User Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded shadow p-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">GitHub User Finder</h1>
+    <input id="usernameInput" type="text" placeholder="Enter GitHub username" class="w-full p-2 border border-gray-300 rounded mb-4 ">
+    <button id="searchBtn" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"> Search </button>
+
+    <div id="userInfo" class="mt-6 hidden p-4 border border-gray-200 rounded bg-gray-50">
+      <img id="avatar" class="w-24 h-24 rounded-full mx-auto mb-4" src="" alt="User  Avatar">
+      <h2 id="name" class="text-xl font-semibold text-center mb-1"></h2>
+      <p id="bio" class="text-center mb-2 text-gray-700"></p>
+      <p class="text-center text-gray-600">
+        <strong>Followers:</strong> <span id="followers"></span> |
+        <strong>Following:</strong> <span id="following"></span>
+      </p>
+      <p class="text-center text-gray-600 mt-1">
+        <a id="profileLink" href="#" target="_blank" class="text-blue-600 hover:underline">View Profile on GitHub</a>
+      </p>
+    </div>
+
+    <p id="errorMsg" class="text-red-500 mt-4 text-center"></p>
+  </div>
+
+  <script>
+    const usernameInput = document.getElementById('usernameInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const userInfo = document.getElementById('userInfo');
+    const errorMsg = document.getElementById('errorMsg');
+
+    const avatar = document.getElementById('avatar');
+    const nameEl = document.getElementById('name');
+    const bio = document.getElementById('bio');
+    const followers = document.getElementById('followers');
+    const following = document.getElementById('following');
+    const profileLink = document.getElementById('profileLink');
+
+    searchBtn.addEventListener('click', async () => {
+      const username = usernameInput.value.trim();
+      if (!username) {
+        errorMsg.textContent = 'Please enter a GitHub username.';
+        userInfo.classList.add('hidden');
+        return;
+      }
+
+      errorMsg.textContent = '';
+      userInfo.classList.add('hidden');
+
+      try {
+        const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('User  not found.');
+          } else {
+            throw new Error(`Error: ${response.status}`);
+          }
+        }
+
+        const data = await response.json();
+
+        avatar.src = data.avatar_url;
+        avatar.alt = `${data.login}'s avatar`;
+        nameEl.textContent = data.name || data.login;
+        bio.textContent = data.bio || 'No bio available.';
+        followers.textContent = data.followers;
+        following.textContent = data.following;
+        profileLink.href = data.html_url;
+
+        userInfo.classList.remove('hidden');
+      } catch (error) {
+        errorMsg.textContent = error.message;
+      }
+    });
+
+    usernameInput.addEventListener('keyup', (event) => {
+      if (event.key === 'Enter') {
+        searchBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
