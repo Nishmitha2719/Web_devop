@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+  <button id="open-modal-btn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+    Open Modal
+  </button>
+<script>
+    const openModalBtn = document.getElementById('open-modal-btn');
+    function showModal() {
+      const backdrop = document.createElement('div');
+      backdrop.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+      const modal = document.createElement('div');
+      modal.className = 'bg-white rounded-lg shadow-lg max-w-md w-11/12 p-6 relative';
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl font-bold';
+      closeBtn.innerHTML = '&times;';
+      const content = document.createElement('div');
+      content.className = 'text-gray-800 text-center';
+      content.textContent = 'This is a simple modal dialog. Click × or outside to close.';
+      modal.appendChild(closeBtn);
+      modal.appendChild(content);
+      backdrop.appendChild(modal);
+      document.body.appendChild(backdrop);
+      closeBtn.addEventListener('click', () => {
+        document.body.removeChild(backdrop);
+      });
+      backdrop.addEventListener('click', (event) => {
+        if (event.target === backdrop) {
+          document.body.removeChild(backdrop);
+        }
+      });
+    }
+    openModalBtn.addEventListener('click', showModal);
+  </script>
+</body>
+</html>
