@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Image Slider</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div id="slider" class="relative w-full max-w-xl mx-auto overflow-hidden rounded-lg shadow-lg">
+    <div id="slides" class="flex transition-transform duration-500 ease-in-out"></div>
+
+    <button id="prevBtn" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75">
+      &#10094;
+    </button>
+    <button id="nextBtn" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75">
+      &#10095;
+    </button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const images = [
+        'pic1.jpg',
+        'pic2.jpg',
+        'pic3.jpg',
+        'pic4.jpg',
+      ];
+
+      const slidesContainer = document.getElementById('slides');
+      let currentIndex = 0;
+
+      images.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = "Slider Image";
+        img.className = "w-full flex-shrink-0";
+        slidesContainer.appendChild(img);
+      });
+
+      const totalSlides = images.length;
+
+      function updateSlidePosition() {
+        slidesContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+      }
+
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        currentIndex = (currentIndex === 0) ? totalSlides - 1 : currentIndex - 1;
+        updateSlidePosition();
+      });
+
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        currentIndex = (currentIndex === totalSlides - 1) ? 0 : currentIndex + 1;
+        updateSlidePosition();
+      });
+
+      setInterval(() => {
+        currentIndex = (currentIndex === totalSlides - 1) ? 0 : currentIndex + 1;
+        updateSlidePosition();
+      }, 5000);
+    });
+  </script>
+
+</body>
+</html>
